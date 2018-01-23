@@ -103,17 +103,17 @@
   <meta name="keywords" content="Hexo, NexT" />
 
 
-<meta name="description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是這樣：">
+<meta name="description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是這樣：">
 <meta property="og:type" content="article">
 <meta property="og:title" content=".net webform connection not close">
 <meta property="og:url" content="http://Poting.com/2018/01/23/transferSite/index.html">
 <meta property="og:site_name" content="Poting">
-<meta property="og:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是這樣：">
+<meta property="og:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是這樣：">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-01-23T08:55:13.000Z">
+<meta property="og:updated_time" content="2018-01-23T09:07:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content=".net webform connection not close">
-<meta name="twitter:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是這樣：">
+<meta name="twitter:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是這樣：">
 
 
 
@@ -208,13 +208,13 @@
         
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
-            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Startseite</a>
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
         </li>
       
         
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
-            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archiv</a>
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
         </li>
       
 
@@ -285,7 +285,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-23T14:27:27+08:00">2018-01-23</time>
             
@@ -328,7 +328,7 @@
 <p>最近遇到最神奇的一件事，就算解決了還是覺得非常莫名  </p>
 </blockquote>
 <h1 id="大前提"><a href="#大前提" class="headerlink" title="大前提"></a>大前提</h1><blockquote>
-<p>環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm<br>問題：tempDB吃光，不管SSMS還是web都有問題</p>
+<p>環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm<br>問題：tempDB吃光，不管SSMS還是web都有問題</p>
 </blockquote>
 <p>事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用<code>Function</code> 把那一串 SQL 包起來，大概是這樣：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Function()&#123;</span><br><span class="line">    Connection open</span><br><span class="line">    run CTE</span><br><span class="line">    Connection close</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -425,10 +425,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
+            Overview
           </li>
         </ul>
       
@@ -449,7 +449,7 @@
                   <a href="/archives/">
                 
                     <span class="site-state-item-count">2</span>
-                    <span class="site-state-item-name">Artikel</span>
+                    <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
               
@@ -520,7 +520,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
