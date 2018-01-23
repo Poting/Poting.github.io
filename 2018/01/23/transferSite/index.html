@@ -103,17 +103,17 @@
   <meta name="keywords" content="Hexo, NexT" />
 
 
-<meta name="description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那">
+<meta name="description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是">
 <meta property="og:type" content="article">
 <meta property="og:title" content=".net webform connection not close">
 <meta property="og:url" content="http://Poting.com/2018/01/23/transferSite/index.html">
 <meta property="og:site_name" content="Poting">
-<meta property="og:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那">
+<meta property="og:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-01-23T08:13:40.000Z">
+<meta property="og:updated_time" content="2018-01-23T08:48:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content=".net webform connection not close">
-<meta name="twitter:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那">
+<meta name="twitter:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那一串 SQL 包起來，大概是">
 
 
 
@@ -325,23 +325,23 @@
 
       
         <blockquote>
-<p>最近遇到最神奇的一件事，就算解決了還是覺得非常莫名  </p>
+<p>最近遇到最神奇的一件事，就算解決了還是覺得非常莫名  </p>
 </blockquote>
 <h1 id="大前提"><a href="#大前提" class="headerlink" title="大前提"></a>大前提</h1><blockquote>
-<p>環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm<br>問題：tempDB吃光，不管SSMS還是web都有問題</p>
+<p>環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm<br>問題：tempDB吃光，不管SSMS還是web都有問題</p>
 </blockquote>
-<p>事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用<code>Function</code> 把那一串 SQL 包起來，大概是這樣：</p>
+<p>事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用<code>Function</code> 把那一串 SQL 包起來，大概是這樣：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Function()&#123;</span><br><span class="line">    Connection open</span><br><span class="line">    run CTE</span><br><span class="line">    Connection close</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>呼叫的時候把結果再放進一個 function 當參數</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">getFunc(Function())&#123;</span><br><span class="line">    Connection open</span><br><span class="line">    <span class="built_in">string</span>[] result = SQL result</span><br><span class="line">    Connection close</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最後把他直接放進DataSet裡面，丟給GridView</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GridView.DataSource = GetDataSet(getFunc(Function()));</span><br></pre></td></tr></table></figure>
-<p>一開始測的時候都好好的，突然某一天發現SQL Server 掛掉了，連過去一看tempDB完全被吃光，好險在上線前就發現這個問題，不然把正式機用掛，重開機損失就大了。</p>
-<p>中間各種查，文件各種看，確認CTE就像一般的SQL select 一樣，排序時會使用tempDB，另外用迴圈時會把<strong>所有撈出來的資料</strong>放在tempDB，最後使用 SQL Server Profiler 監控，終於發現是Conneciton沒有關閉的緣故( exec sp_reset_connection )。  </p>
-<h1 id="解決辦法"><a href="#解決辦法" class="headerlink" title="解決辦法"></a>解決辦法</h1><p>最後換了一個寫法，先用一個變數承接，再拿來使用<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var temp = getFunc(Function());</span><br><span class="line">GridView.DataSource = GetDataSet(temp);</span><br></pre></td></tr></table></figure></p>
-<p>然後問題就解決的…………….</p>
-<p>猜測大概是因為<br><mark>（以下原因皆為腦補）還沒google到問題點</mark><br>recursive CTE 會使用tempDB<br>connection close 的話會自動釋放<br>直接傳入太多 function 會讓close 失效?(不確定)  </p>
-<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>下次先用變數接function return 的值</p>
+<p>呼叫的時候把結果再放進一個 function 當參數</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">getFunc(Function())&#123;</span><br><span class="line">    Connection open</span><br><span class="line">    <span class="built_in">string</span>[] result = SQL result</span><br><span class="line">    Connection close</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最後把他直接放進DataSet裡面，丟給GridView</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GridView.DataSource = GetDataSet(getFunc(Function()));</span><br></pre></td></tr></table></figure>
+<p>一開始測的時候都好好的，突然某一天發現SQL Server 掛掉了，連過去一看tempDB完全被吃光，好險在上線前就發現這個問題，不然把正式機用掛，重開機損失就大了。</p>
+<p>中間各種查，文件各種看，確認CTE就像一般的SQL select 一樣，排序時會使用tempDB，另外用迴圈時會把<strong>所有撈出來的資料</strong>放在tempDB，最後使用 SQL Server Profiler 監控，終於發現是Conneciton沒有關閉的緣故( exec sp_reset_connection )。  </p>
+<h1 id="解決辦法"><a href="#解決辦法" class="headerlink" title="解決辦法"></a>解決辦法</h1><p>最後換了一個寫法，先用一個變數承接，再拿來使用<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var temp = getFunc(Function());</span><br><span class="line">GridView.DataSource = GetDataSet(temp);</span><br></pre></td></tr></table></figure></p>
+<p>然後問題就解決的…………….</p>
+<p>猜測大概是因為<br><mark>（以下原因皆為腦補）還沒google到問題點</mark><br>recursive CTE 會使用tempDB<br>connection close 的話會自動釋放<br>直接傳入太多 function 會讓close 失效?(不確定)  </p>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>下次先用變數接function return 的值</p>
 
       
     </div>
