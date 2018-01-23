@@ -103,23 +103,27 @@
   <meta name="keywords" content="Hexo, NexT" />
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Poting">
-<meta property="og:url" content="http://Poting.com/index.html">
+<meta name="description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".net webform connection not close">
+<meta property="og:url" content="http://Poting.com/2018/01/23/transferSite/index.html">
 <meta property="og:site_name" content="Poting">
+<meta property="og:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-01-23T08:13:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Poting">
+<meta name="twitter:title" content=".net webform connection not close">
+<meta name="twitter:description" content="最近遇到最神奇的一件事，就算解決了還是覺得非常莫名    大前提 環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題  事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用Function 把那">
 
 
 
 
 
 
-  <link rel="canonical" href="http://Poting.com/"/>
+  <link rel="canonical" href="http://Poting.com/2018/01/23/transferSite/"/>
 
 
-  <title>Poting</title>
+  <title>.net webform connection not close | Poting</title>
   
 
 
@@ -166,8 +170,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -238,9 +241,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -272,9 +275,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/23/transferSite/" itemprop="url">.net webform connection not close</a></h1>
+          <h1 class="post-title" itemprop="name headline">.net webform connection not close</h1>
         
 
         <div class="post-meta">
@@ -323,24 +324,25 @@
       
 
       
-        
-          
-          
-最近遇到最神奇的一件事，就算解決了還是覺得非常莫名  
+        <blockquote>
+<p>最近遇到最神奇的一件事，就算解決了還是覺得非常莫名  </p>
+</blockquote>
+<h1 id="大前提"><a href="#大前提" class="headerlink" title="大前提"></a>大前提</h1><blockquote>
+<p>環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm<br>問題：tempDB吃光，不管SSMS還是web都有問題</p>
+</blockquote>
+<p>事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用<code>Function</code> 把那一串 SQL 包起來，大概是這樣：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Function()&#123;</span><br><span class="line">    Connection open</span><br><span class="line">    run CTE</span><br><span class="line">    Connection close</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>呼叫的時候把結果再放進一個 function 當參數</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">getFunc(Function())&#123;</span><br><span class="line">    Connection open</span><br><span class="line">    <span class="built_in">string</span>[] result = SQL result</span><br><span class="line">    Connection close</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最後把他直接放進DataSet裡面，丟給GridView</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GridView.DataSource = GetDataSet(getFunc(Function()));</span><br></pre></td></tr></table></figure>
+<p>一開始測的時候都好好的，突然某一天發現SQL Server 掛掉了，連過去一看tempDB完全被吃光，好險在上線前就發現這個問題，不然把正式機用掛，重開機損失就大了。</p>
+<p>中間各種查，文件各種看，確認CTE就像一般的SQL select 一樣，排序時會使用tempDB，另外用迴圈時會把<strong>所有撈出來的資料</strong>放在tempDB，最後使用 SQL Server Profiler 監控，終於發現是Conneciton沒有關閉的緣故( exec sp_reset_connection )。  </p>
+<h1 id="解決辦法"><a href="#解決辦法" class="headerlink" title="解決辦法"></a>解決辦法</h1><p>最後換了一個寫法，先用一個變數承接，再拿來使用<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var temp = getFunc(Function());</span><br><span class="line">GridView.DataSource = GetDataSet(temp);</span><br></pre></td></tr></table></figure></p>
+<p>然後問題就解決的…………….</p>
+<p>猜測大概是因為<br><mark>（以下原因皆為腦補）還沒google到問題點</mark><br>recursive CTE 會使用tempDB<br>connection close 的話會自動釋放<br>直接傳入太多 function 會讓close 失效?(不確定)  </p>
+<h1 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h1><p>下次先用變數接function return 的值</p>
 
-大前提
-環境：.NET Framwork 5 、SQL Server 2012 、 ASP .NET webForm問題：tempDB吃光，不管SSMS還是web都有問題
-
-事情的開始是這樣的，因為有使用迴圈C
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/23/transferSite/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
       
     </div>
     
@@ -357,142 +359,28 @@
       
 
       
-
-      
-
       
       
-        <div class="post-eof"></div>
+
       
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://Poting.com/2017/10/31/smtp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Poting">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Poting">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/31/smtp/" itemprop="url">ASP.NET Core 2.0 Web API寄信功能</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-31T00:00:00+08:00">2017-10-31</time>
+              <a href="/2017/10/31/smtp/" rel="next" title="ASP.NET Core 2.0 Web API寄信功能">
+                <i class="fa fa-chevron-left"></i> ASP.NET Core 2.0 Web API寄信功能
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-          
-值得紀念的第一篇文章~~~~因為最近在玩Web API 的寄信功能，就隨手紀錄吧
-
-SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些套件來達成寄信的功能，像是MailKit、Mailgun等等之類的，到了2.0時包進了 SMTP，這真的hen棒!! (可以直
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/10/31/smtp/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -502,14 +390,19 @@ SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些�
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -530,8 +423,17 @@ SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些�
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -576,6 +478,22 @@ SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些�
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大前提"><span class="nav-number">1.</span> <span class="nav-text">大前提</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解決辦法"><span class="nav-number">2.</span> <span class="nav-text">解決辦法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#結論"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -707,6 +625,10 @@ SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些�
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.2"></script>
+
+
 
   
 
