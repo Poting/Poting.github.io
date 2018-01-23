@@ -8,7 +8,7 @@ tags:
 
 # 大前提
 >環境：.NET Framwork 5 、 SQL Server 2012 、 ASP .NET webForm  
->問題：tempDB吃光，不管SSMS還是web都有問題
+>問題：tempDB吃光，不管SSMS還是web都有問題
 
 事情的開始是這樣的，因為有使用迴圈CTE(Common Table Expression)的需求，所以就用`Function` 把那一串 SQL 包起來，大概是這樣：
 
