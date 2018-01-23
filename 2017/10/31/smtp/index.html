@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.2" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.0.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+<meta name="description" content="值得紀念的第一篇文章~~~~因為最近在玩Web API 的寄信功能，就隨手紀錄吧  SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些套件來達成寄信的功能，像是MailKit、Mailgun等等之類的，到了2.0時包進了 SMTP，這真的hen棒!! (可以直接copy code過來修改)。   好的，所以什麼是SMTP?  簡單郵件傳輸協定 (Simple">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Core 2.0 Web API寄信功能">
+<meta property="og:url" content="http://Poting.com/2017/10/31/smtp/index.html">
+<meta property="og:site_name" content="Poting">
+<meta property="og:description" content="值得紀念的第一篇文章~~~~因為最近在玩Web API 的寄信功能，就隨手紀錄吧  SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些套件來達成寄信的功能，像是MailKit、Mailgun等等之類的，到了2.0時包進了 SMTP，這真的hen棒!! (可以直接copy code過來修改)。   好的，所以什麼是SMTP?  簡單郵件傳輸協定 (Simple">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://i.imgur.com/GLCbohj.png">
+<meta property="og:updated_time" content="2018-01-23T03:59:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ASP.NET Core 2.0 Web API寄信功能">
+<meta name="twitter:description" content="值得紀念的第一篇文章~~~~因為最近在玩Web API 的寄信功能，就隨手紀錄吧  SMTP在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些套件來達成寄信的功能，像是MailKit、Mailgun等等之類的，到了2.0時包進了 SMTP，這真的hen棒!! (可以直接copy code過來修改)。   好的，所以什麼是SMTP?  簡單郵件傳輸協定 (Simple">
+<meta name="twitter:image" content="https://i.imgur.com/GLCbohj.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://Poting.com/2017/10/31/smtp/"/>
+
+
+  <title>ASP.NET Core 2.0 Web API寄信功能 | Poting</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Poting</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://Poting.com/2017/10/31/smtp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Poting">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Poting">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ASP.NET Core 2.0 Web API寄信功能</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-31T00:00:00+08:00">2017-10-31</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>值得紀念的第一篇文章~~~~<br>因為最近在玩Web API 的寄信功能，就隨手紀錄吧</p>
+</blockquote>
+<h1 id="SMTP"><a href="#SMTP" class="headerlink" title="SMTP"></a>SMTP</h1><p>在 ASP .NET Core 1.x 時並沒有包含SMTP，所以就需要安裝一些套件來達成寄信的功能，像是<br><strong>MailKit</strong>、<strong>Mailgun</strong>等等之類的，到了2.0時包進了 SMTP，這真的hen棒!! (可以直接copy code過來修改)。  </p>
+<p>好的，所以什麼是SMTP?</p>
+<blockquote>
+<p>簡單郵件傳輸協定 (Simple Mail Transfer Protocol) 是事實上的在Internet傳輸email的標準</p>
+</blockquote>
+<p>根據WIKI 的定義非常的淺顯易懂，就是一個處理郵件的協定，電腦上安裝了 SMTP 之後就可以寄信拉，通常都是透過<strong>port 25</strong>來建立連線，正常來說應該不會有程式占用 25 port 不過保險起見，還是確認一下比較好。  </p>
+<p>SMTP是一個 “推送” 的協定，如果要接收信件，就需要 <strong>POP3</strong>、或<strong>IMAP</strong>來實作，<br>但是這不是這次的重點，所以改天再來說吧。  </p>
+<p>下面列出各家常用的SMTP address  </p>
+<p><img src="https://i.imgur.com/GLCbohj.png" alt="image"></p>
+<h2 id="補充"><a href="#補充" class="headerlink" title="補充"></a>補充</h2><p>如果用 SMTP 寄出的信件沒有寄件備份，找郵件管理員大大作設定 :) 不過用資料庫存起來，後續的資料處理 ( 應該 ) 會比較方便吧 ? (應該…)</p>
+<h1 id="範例"><a href="#範例" class="headerlink" title="範例"></a>範例</h1><p>來點sample code吧，首先在 Repository 新增一個 Method 來寄信</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Send_mail</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="built_in">string</span> mail_server = <span class="string">"Your Server IP"</span>;</span><br><span class="line">            <span class="built_in">string</span> mail_subject = <span class="string">"This is Title"</span>;</span><br><span class="line">            <span class="built_in">string</span> mail_body = <span class="string">""</span>;</span><br><span class="line">            mail_body += <span class="string">"&lt;h3&gt;Dear 測試信件&lt;/h3&gt;"</span>;</span><br><span class="line">            mail_body += <span class="string">"&lt;p&gt;Here is a LOOOONG Mail Body：&lt;p&gt;"</span>;</span><br><span class="line">            mail_body += <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">            mail_body += <span class="string">"&lt;p&gt;"</span>;</span><br><span class="line">            mail_body += <span class="string">"&lt;/p&gt;"</span>;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">string</span> mail_sender = <span class="string">"Send@email.com"</span>;</span><br><span class="line">            <span class="built_in">string</span> address = <span class="string">"Receive@email.com"</span>;</span><br><span class="line">            &lt;!-- (寄信者, 收信者) --&gt;</span><br><span class="line">            MailMessage message = <span class="keyword">new</span> MailMessage(mail_sender, address);</span><br><span class="line">            message.IsBodyHtml = <span class="literal">true</span>;</span><br><span class="line">            &lt;!-- E-mail編碼 --&gt;</span><br><span class="line">            message.BodyEncoding = System.Text.Encoding.UTF8;</span><br><span class="line">            &lt;!-- E-mail主旨 --&gt;</span><br><span class="line">            message.Subject = mail_subject;</span><br><span class="line">            &lt;!-- 優先權 --&gt;</span><br><span class="line">            message.Priority = MailPriority.Normal; </span><br><span class="line">            &lt;!-- E-mail內容 --&gt;</span><br><span class="line">            message.Body = mail_body;</span><br><span class="line"></span><br><span class="line">            SmtpClient smtpClient = <span class="keyword">new</span> SmtpClient(mail_server, <span class="number">25</span>);<span class="comment">//設定E-mail Server和port</span></span><br><span class="line">            smtpClient.Credentials = <span class="keyword">new</span> NetworkCredential(<span class="string">"account"</span>, <span class="string">"password"</span>);</span><br><span class="line">            smtpClient.Send(message);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>然後在 service 裡面就可以直接呼叫剛剛在 repository 新增的 method，完成</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Email</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    RegistRepo.Send_mail();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>controller 就不多贅述，google吧。</p>
+<blockquote>
+<p>參考來源</p>
+<ul>
+<li><a href="http://learn-web-hosting-domain-name.mygreatname.com/how-mail-server-works/how-smtp-pop3-mail-servers-works.html" target="_blank" rel="noopener">http://learn-web-hosting-domain-name.mygreatname.com/how-mail-server-works/how-smtp-pop3-mail-servers-works.html</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%AE%80%E5%8D%95%E9%82%AE%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/%E7%AE%80%E5%8D%95%E9%82%AE%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE</a> </li>
+<li><a href="https://www.lifewire.com/what-are-the-gmail-smtp-settings-1170854" target="_blank" rel="noopener">https://www.lifewire.com/what-are-the-gmail-smtp-settings-1170854</a></li>
+<li><a href="https://www.lifewire.com/what-are-yahoo-smtp-settings-for-email-1170875" target="_blank" rel="noopener">https://www.lifewire.com/what-are-yahoo-smtp-settings-for-email-1170875</a></li>
+<li><a href="https://www.lifewire.com/what-are-windows-live-hotmail-smtp-settings-1170861" target="_blank" rel="noopener">https://www.lifewire.com/what-are-windows-live-hotmail-smtp-settings-1170861</a></li>
+</ul>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/23/test/" rel="prev" title="test">
+                test <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Poting</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SMTP"><span class="nav-number">1.</span> <span class="nav-text">SMTP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#補充"><span class="nav-number">1.1.</span> <span class="nav-text">補充</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#範例"><span class="nav-number">2.</span> <span class="nav-text">範例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Poting</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.0.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.2"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
